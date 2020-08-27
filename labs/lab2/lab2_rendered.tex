@@ -1,0 +1,452 @@
+% This LaTeX was auto-generated from MATLAB code.
+% To make changes, update the MATLAB code and export to LaTeX again.
+
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{epstopdf}
+\usepackage[table]{xcolor}
+\usepackage{matlab}
+
+\sloppy
+\epstopdfsetup{outdir=./}
+\graphicspath{ {./lab2_rendered_images/} }
+
+\begin{document}
+
+\matlabtitle{\textbf{Lab 2 (Sunspot Activity)}}
+
+\begin{par}
+\begin{flushleft}
+\textbf{by Jason Ha (z5115925)}
+\end{flushleft}
+\end{par}
+
+\begin{par}
+\begin{flushleft}
+In this lab, we investigate the trend in sunspot data over time since the year of 1818. We expect to visualise a time-series that we can treat equally as a signal and perform the the usual transformations such as Fourier Transforms and more. 
+\end{flushleft}
+\end{par}
+
+\matlabheading{Step 1 - Importing The Data}
+
+\begin{matlabcode}
+% Use the function 'readtable' to read the CSV file into the workspace
+% Assign the loaded dataset to the variable 'raw'
+raw = readtable("SN_d_tot_V2.0.csv")
+\end{matlabcode}
+\begin{matlabtableoutput}
+{
+\begin{tabular} {|c|c|c|c|c|c|c|c|c|}\hline
+\mlcell{ } & \mlcell{Var1} & \mlcell{Var2} & \mlcell{Var3} & \mlcell{Var4} & \mlcell{Var5} & \mlcell{Var6} & \mlcell{Var7} & \mlcell{Var8} \\ \hline
+\mlcell{1} & \mlcell{1818} & \mlcell{1} & \mlcell{1} & \mlcell{1.8180e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{2} & \mlcell{1818} & \mlcell{1} & \mlcell{2} & \mlcell{1.8180e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{3} & \mlcell{1818} & \mlcell{1} & \mlcell{3} & \mlcell{1.8180e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{4} & \mlcell{1818} & \mlcell{1} & \mlcell{4} & \mlcell{1.8180e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{5} & \mlcell{1818} & \mlcell{1} & \mlcell{5} & \mlcell{1.8180e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{6} & \mlcell{1818} & \mlcell{1} & \mlcell{6} & \mlcell{1.8180e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{7} & \mlcell{1818} & \mlcell{1} & \mlcell{7} & \mlcell{1.8180e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{8} & \mlcell{1818} & \mlcell{1} & \mlcell{8} & \mlcell{1.8180e+03} & \mlcell{65} & \mlcell{10.2000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{9} & \mlcell{1818} & \mlcell{1} & \mlcell{9} & \mlcell{1.8180e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{10} & \mlcell{1818} & \mlcell{1} & \mlcell{10} & \mlcell{1.8180e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{11} & \mlcell{1818} & \mlcell{1} & \mlcell{11} & \mlcell{1.8180e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{12} & \mlcell{1818} & \mlcell{1} & \mlcell{12} & \mlcell{1.8180e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{13} & \mlcell{1818} & \mlcell{1} & \mlcell{13} & \mlcell{1.8180e+03} & \mlcell{37} & \mlcell{7.7000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{14} & \mlcell{1818} & \mlcell{1} & \mlcell{14} & \mlcell{1.8180e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{15} & \mlcell{1818} & \mlcell{1} & \mlcell{15} & \mlcell{1.8180e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{16} & \mlcell{1818} & \mlcell{1} & \mlcell{16} & \mlcell{1.8180e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{17} & \mlcell{1818} & \mlcell{1} & \mlcell{17} & \mlcell{1.8180e+03} & \mlcell{77} & \mlcell{11.1000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{18} & \mlcell{1818} & \mlcell{1} & \mlcell{18} & \mlcell{1.8180e+03} & \mlcell{98} & \mlcell{12.6000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{19} & \mlcell{1818} & \mlcell{1} & \mlcell{19} & \mlcell{1.8181e+03} & \mlcell{105} & \mlcell{13.0000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{20} & \mlcell{1818} & \mlcell{1} & \mlcell{20} & \mlcell{1.8181e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{21} & \mlcell{1818} & \mlcell{1} & \mlcell{21} & \mlcell{1.8181e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{22} & \mlcell{1818} & \mlcell{1} & \mlcell{22} & \mlcell{1.8181e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{23} & \mlcell{1818} & \mlcell{1} & \mlcell{23} & \mlcell{1.8181e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{24} & \mlcell{1818} & \mlcell{1} & \mlcell{24} & \mlcell{1.8181e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{25} & \mlcell{1818} & \mlcell{1} & \mlcell{25} & \mlcell{1.8181e+03} & \mlcell{25} & \mlcell{6.3000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{26} & \mlcell{1818} & \mlcell{1} & \mlcell{26} & \mlcell{1.8181e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{27} & \mlcell{1818} & \mlcell{1} & \mlcell{27} & \mlcell{1.8181e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{28} & \mlcell{1818} & \mlcell{1} & \mlcell{28} & \mlcell{1.8181e+03} & \mlcell{38} & \mlcell{7.8000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{29} & \mlcell{1818} & \mlcell{1} & \mlcell{29} & \mlcell{1.8181e+03} & \mlcell{20} & \mlcell{5.7000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{30} & \mlcell{1818} & \mlcell{1} & \mlcell{30} & \mlcell{1.8181e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{31} & \mlcell{1818} & \mlcell{1} & \mlcell{31} & \mlcell{1.8181e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{32} & \mlcell{1818} & \mlcell{2} & \mlcell{1} & \mlcell{1.8181e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{33} & \mlcell{1818} & \mlcell{2} & \mlcell{2} & \mlcell{1.8181e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{34} & \mlcell{1818} & \mlcell{2} & \mlcell{3} & \mlcell{1.8181e+03} & \mlcell{17} & \mlcell{5.2000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{35} & \mlcell{1818} & \mlcell{2} & \mlcell{4} & \mlcell{1.8181e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{36} & \mlcell{1818} & \mlcell{2} & \mlcell{5} & \mlcell{1.8181e+03} & \mlcell{20} & \mlcell{5.7000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{37} & \mlcell{1818} & \mlcell{2} & \mlcell{6} & \mlcell{1.8181e+03} & \mlcell{25} & \mlcell{6.3000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{38} & \mlcell{1818} & \mlcell{2} & \mlcell{7} & \mlcell{1.8181e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{39} & \mlcell{1818} & \mlcell{2} & \mlcell{8} & \mlcell{1.8181e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{40} & \mlcell{1818} & \mlcell{2} & \mlcell{9} & \mlcell{1.8181e+03} & \mlcell{87} & \mlcell{11.8000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{41} & \mlcell{1818} & \mlcell{2} & \mlcell{10} & \mlcell{1.8181e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{42} & \mlcell{1818} & \mlcell{2} & \mlcell{11} & \mlcell{1.8181e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{43} & \mlcell{1818} & \mlcell{2} & \mlcell{12} & \mlcell{1.8181e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{44} & \mlcell{1818} & \mlcell{2} & \mlcell{13} & \mlcell{1.8181e+03} & \mlcell{192} & \mlcell{17.5000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{45} & \mlcell{1818} & \mlcell{2} & \mlcell{14} & \mlcell{1.8181e+03} & \mlcell{73} & \mlcell{10.8000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{46} & \mlcell{1818} & \mlcell{2} & \mlcell{15} & \mlcell{1.8181e+03} & \mlcell{82} & \mlcell{11.4000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{47} & \mlcell{1818} & \mlcell{2} & \mlcell{16} & \mlcell{1.8181e+03} & \mlcell{28} & \mlcell{6.7000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{48} & \mlcell{1818} & \mlcell{2} & \mlcell{17} & \mlcell{1.8181e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{49} & \mlcell{1818} & \mlcell{2} & \mlcell{18} & \mlcell{1.8181e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{50} & \mlcell{1818} & \mlcell{2} & \mlcell{19} & \mlcell{1.8181e+03} & \mlcell{0} & \mlcell{2.0000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{51} & \mlcell{1818} & \mlcell{2} & \mlcell{20} & \mlcell{1.8181e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{52} & \mlcell{1818} & \mlcell{2} & \mlcell{21} & \mlcell{1.8181e+03} & \mlcell{0} & \mlcell{2.0000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{53} & \mlcell{1818} & \mlcell{2} & \mlcell{22} & \mlcell{1.8181e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{54} & \mlcell{1818} & \mlcell{2} & \mlcell{23} & \mlcell{1.8181e+03} & \mlcell{0} & \mlcell{2.0000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{55} & \mlcell{1818} & \mlcell{2} & \mlcell{24} & \mlcell{1.8181e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{56} & \mlcell{1818} & \mlcell{2} & \mlcell{25} & \mlcell{1.8182e+03} & \mlcell{0} & \mlcell{2.0000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{57} & \mlcell{1818} & \mlcell{2} & \mlcell{26} & \mlcell{1.8182e+03} & \mlcell{0} & \mlcell{2.0000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{58} & \mlcell{1818} & \mlcell{2} & \mlcell{27} & \mlcell{1.8182e+03} & \mlcell{0} & \mlcell{2.0000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{59} & \mlcell{1818} & \mlcell{2} & \mlcell{28} & \mlcell{1.8182e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{60} & \mlcell{1818} & \mlcell{3} & \mlcell{1} & \mlcell{1.8182e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{61} & \mlcell{1818} & \mlcell{3} & \mlcell{2} & \mlcell{1.8182e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{62} & \mlcell{1818} & \mlcell{3} & \mlcell{3} & \mlcell{1.8182e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{63} & \mlcell{1818} & \mlcell{3} & \mlcell{4} & \mlcell{1.8182e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{64} & \mlcell{1818} & \mlcell{3} & \mlcell{5} & \mlcell{1.8182e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{65} & \mlcell{1818} & \mlcell{3} & \mlcell{6} & \mlcell{1.8182e+03} & \mlcell{28} & \mlcell{6.7000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{66} & \mlcell{1818} & \mlcell{3} & \mlcell{7} & \mlcell{1.8182e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{67} & \mlcell{1818} & \mlcell{3} & \mlcell{8} & \mlcell{1.8182e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{68} & \mlcell{1818} & \mlcell{3} & \mlcell{9} & \mlcell{1.8182e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{69} & \mlcell{1818} & \mlcell{3} & \mlcell{10} & \mlcell{1.8182e+03} & \mlcell{48} & \mlcell{8.8000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{70} & \mlcell{1818} & \mlcell{3} & \mlcell{11} & \mlcell{1.8182e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{71} & \mlcell{1818} & \mlcell{3} & \mlcell{12} & \mlcell{1.8182e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{72} & \mlcell{1818} & \mlcell{3} & \mlcell{13} & \mlcell{1.8182e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{73} & \mlcell{1818} & \mlcell{3} & \mlcell{14} & \mlcell{1.8182e+03} & \mlcell{32} & \mlcell{7.1000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{74} & \mlcell{1818} & \mlcell{3} & \mlcell{15} & \mlcell{1.8182e+03} & \mlcell{25} & \mlcell{6.3000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{75} & \mlcell{1818} & \mlcell{3} & \mlcell{16} & \mlcell{1.8182e+03} & \mlcell{47} & \mlcell{8.7000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{76} & \mlcell{1818} & \mlcell{3} & \mlcell{17} & \mlcell{1.8182e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{77} & \mlcell{1818} & \mlcell{3} & \mlcell{18} & \mlcell{1.8182e+03} & \mlcell{43} & \mlcell{8.3000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{78} & \mlcell{1818} & \mlcell{3} & \mlcell{19} & \mlcell{1.8182e+03} & \mlcell{0} & \mlcell{2.0000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{79} & \mlcell{1818} & \mlcell{3} & \mlcell{20} & \mlcell{1.8182e+03} & \mlcell{0} & \mlcell{2.0000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{80} & \mlcell{1818} & \mlcell{3} & \mlcell{21} & \mlcell{1.8182e+03} & \mlcell{85} & \mlcell{11.7000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{81} & \mlcell{1818} & \mlcell{3} & \mlcell{22} & \mlcell{1.8182e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{82} & \mlcell{1818} & \mlcell{3} & \mlcell{23} & \mlcell{1.8182e+03} & \mlcell{52} & \mlcell{9.1000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{83} & \mlcell{1818} & \mlcell{3} & \mlcell{24} & \mlcell{1.8182e+03} & \mlcell{80} & \mlcell{11.3000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{84} & \mlcell{1818} & \mlcell{3} & \mlcell{25} & \mlcell{1.8182e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{85} & \mlcell{1818} & \mlcell{3} & \mlcell{26} & \mlcell{1.8182e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{86} & \mlcell{1818} & \mlcell{3} & \mlcell{27} & \mlcell{1.8182e+03} & \mlcell{57} & \mlcell{9.5000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{87} & \mlcell{1818} & \mlcell{3} & \mlcell{28} & \mlcell{1.8182e+03} & \mlcell{48} & \mlcell{8.8000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{88} & \mlcell{1818} & \mlcell{3} & \mlcell{29} & \mlcell{1.8182e+03} & \mlcell{48} & \mlcell{8.8000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{89} & \mlcell{1818} & \mlcell{3} & \mlcell{30} & \mlcell{1.8182e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{90} & \mlcell{1818} & \mlcell{3} & \mlcell{31} & \mlcell{1.8182e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{91} & \mlcell{1818} & \mlcell{4} & \mlcell{1} & \mlcell{1.8182e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{92} & \mlcell{1818} & \mlcell{4} & \mlcell{2} & \mlcell{1.8183e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{93} & \mlcell{1818} & \mlcell{4} & \mlcell{3} & \mlcell{1.8183e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{94} & \mlcell{1818} & \mlcell{4} & \mlcell{4} & \mlcell{1.8183e+03} & \mlcell{18} & \mlcell{5.4000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{95} & \mlcell{1818} & \mlcell{4} & \mlcell{5} & \mlcell{1.8183e+03} & \mlcell{55} & \mlcell{9.4000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{96} & \mlcell{1818} & \mlcell{4} & \mlcell{6} & \mlcell{1.8183e+03} & \mlcell{38} & \mlcell{7.8000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{97} & \mlcell{1818} & \mlcell{4} & \mlcell{7} & \mlcell{1.8183e+03} & \mlcell{-1} & \mlcell{-1.0000} & \mlcell{0} & \mlcell{1} \\ \hline
+\mlcell{98} & \mlcell{1818} & \mlcell{4} & \mlcell{8} & \mlcell{1.8183e+03} & \mlcell{38} & \mlcell{7.8000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{99} & \mlcell{1818} & \mlcell{4} & \mlcell{9} & \mlcell{1.8183e+03} & \mlcell{60} & \mlcell{9.8000} & \mlcell{1} & \mlcell{1} \\ \hline
+\mlcell{100} & \mlcell{1818} & \mlcell{4} & \mlcell{10} & \mlcell{1.8183e+03} & \mlcell{62} & \mlcell{9.9000} & \mlcell{1} & \mlcell{1} \\ 
+\hline
+\end{tabular}
+}
+\end{matlabtableoutput}
+\begin{matlabcode}
+
+% Extracting the 4th and 5th columns and renaming them to t and x
+% respectively
+t = table2array(raw(:, 4));
+x = table2array(raw(:, 5));
+years = table2array(raw(:,1));
+
+% Assign NaN values to any entry in x whose value is -1.
+x(x == -1) = NaN;
+\end{matlabcode}
+
+
+\matlabheading{Step 2 - Plotting The Data}
+
+\begin{matlabcode}
+figure(1)
+plot(t,x)
+title("Trend In Sunspots From 1818-2017")
+xlabel("Year (t)")
+ylabel("Sunspot Data (x)")
+xlim([min(t), max(t)])
+\end{matlabcode}
+\begin{center}
+\includegraphics[width=\maxwidth{56.196688409433015em}]{figure_0.eps}
+\end{center}
+
+\matlabheadingtwo{\textbf{Observations}}
+
+\begin{par}
+\begin{flushleft}
+We can see that the larges occurences of sunspots in the dataset occur as peaks in the time-series. These peaks appear \textit{quite} periodically despite the signal being inherently non-stationary. The fairly periodic nature of the signal allows us to gain insights into, perhaps the spectral data of the time-series and, hence, the frequency with which these periodic spikes occur.
+\end{flushleft}
+\end{par}
+
+\matlabheadingtwo{Interpolating Between NaN Data}
+
+\begin{par}
+\begin{flushleft}
+When performing the FFT, on the time-series, the operation will fail on NaN entries. It is best to interpolate between non-NaN values to produce as much of a 'continuous' time-series as much as possible. We choose to do \textit{nearest-neighbour} interpolation between the sample points since it does not make much sense to have a fraction of a sunspot detected (the ones in the dataset are integer values after all). Furthermore, the number of sunspots should not vary drastically in one day.
+\end{flushleft}
+\end{par}
+
+\begin{matlabcode}
+[F,TF] = fillmissing(x, 'nearest', 'SamplePoints', t);
+figure(2)
+plot(t, F)
+title("Sunspot Time-Series AFTER Linear Interpolation")
+xlabel("Year (t)")
+ylabel("Sunspot Data (x)")
+xlim([min(t), max(t)])
+\end{matlabcode}
+\begin{center}
+\includegraphics[width=\maxwidth{56.196688409433015em}]{figure_1.eps}
+\end{center}
+
+
+\matlabheading{Step 3 - Estimating The Sampling Period}
+
+\begin{par}
+\begin{flushleft}
+Because of the presence of $-1$ entries in the dataset, this suggests that the sunspot data was sampled at an irregular rate. This is immediately evident from the 17-19 entries with consecutive sunspot recordings and then a relatively longer period of the time of no recorded data until entry 25 where 25 sunspots were recorded.
+\end{flushleft}
+\end{par}
+
+\begin{par}
+\begin{flushleft}
+A simple way would be to take the total length of the $x$-vector and divide this by the number of non-NaN entries in the dataset. This would give us, on average, how many days per sample we have:
+\end{flushleft}
+\end{par}
+
+\begin{matlabcode}
+total_days = length(t);
+actual_samples = length(x(~isnan(x)));
+T = total_days / actual_samples
+\end{matlabcode}
+\begin{matlaboutput}
+T = 1.0467
+\end{matlaboutput}
+
+\begin{par}
+\begin{flushleft}
+The results show that the \textit{average} sample rate is 1.0467 day / sample. This makes sense as the data in the early stages (e.g. 1818 - c.1900s) would be limited due to limited technology. As technology develops, the rate at which we can record sunspots actively would be more efficient. This is true especially for data recorded in more recent times like the 2000s.
+\end{flushleft}
+\end{par}
+
+
+\matlabheading{Step 4 - Computing The Frequency Spectrum Of The Data}
+
+\begin{par}
+\begin{flushleft}
+Given the data is discrete, the DFT is an appropriate method to compute the Frequency Spectrum using the 'fft' MATLAB function. 
+\end{flushleft}
+\end{par}
+
+\begin{matlabcode}
+% Take the magnitude of the discrete Fourier Transform of the time-series.
+% Use an FFT block size of 1024 samples.
+NFFT = 2048;
+X = abs(fft(F, NFFT));
+
+% We need to normalise the data in the event of extremely large spikes in
+% the resulting spectra:
+mag = X / max(X);
+
+% Take the only the positive half of the spectrum (one-sided). Take this
+% from index 1 to the last which is the index corresponding to HALF of the
+% FFT block size (i.e. index 512)
+mag = mag(1:NFFT/2);
+
+% The sampling frequency is the inverse of T. The nyquist frequency is HALF
+% of the sampling frequency. This means the frequency axis will terminate
+% at Fs/2 ~= 0.5 samples/day
+Fs = 1/T;
+F_nyq = Fs / 2;
+
+% Generate the frequency bins from 0 to NFFT/2 - 1. These bins are then
+% normalised from 0 to 1 by dividing by the FFT block size. Will need to
+% multiply by two since we are taking a single-sided spectrum.
+freq_bins = 2 * (0:NFFT/2-1) / NFFT;
+
+% The last element of the 'freq_bins' needs to be the Nyquist frequency.
+% Multiply freq_bins by F_nyq:
+freq_Hz = F_nyq * freq_bins;
+
+% Plot the spectrum:
+figure(3)
+plot(freq_Hz, mag)
+ylabel("Amplitude")
+xlabel("Frequency")
+title("Magnitude Spectrum Of The Sunspot Data")
+xlim([0, max(freq_Hz)])
+\end{matlabcode}
+\begin{center}
+\includegraphics[width=\maxwidth{56.196688409433015em}]{figure_2.eps}
+\end{center}
+
+\begin{par}
+\begin{flushleft}
+What we have is a large DC spike in the magnitude spectrum which suggests the presence of the DC offset in the data. We can immediately suggest that this is due to the oscillatory behaviour about a non-zero number of sunspots. This is due to the oscillation being centred about the \textbf{average} number of sunspots which we can compute easily.
+\end{flushleft}
+\end{par}
+
+\begin{matlabcode}
+average_sunspots = mean(F)
+\end{matlabcode}
+\begin{matlaboutput}
+average_sunspots = 84.7306
+\end{matlaboutput}
+
+\begin{par}
+\begin{flushleft}
+The output shows the data oscillating about the mean value of 84.7412 sunspots. The following plot shows the mean number of sunspots against the time-series graph:
+\end{flushleft}
+\end{par}
+
+\begin{matlabcode}
+figure(4)
+plot(t,F)
+hold on
+hline = refline(0,average_sunspots);
+hline.Color = 'r';
+legend("Sunspot Time Series", "Mean Number Of Sunspots Recorded")
+title("Sunspot Time-Series WITH Mean Number Of Sunspots")
+xlabel("Year (t)")
+ylabel("Sunspot Data (x)")
+xlim([min(t), max(t)])
+\end{matlabcode}
+\begin{center}
+\includegraphics[width=\maxwidth{56.196688409433015em}]{figure_3.eps}
+\end{center}
+\begin{matlabcode}
+
+\end{matlabcode}
+
+\begin{par}
+\begin{flushleft}
+There is also a noticeble peak at a frequency of f = 0.03499 Hz (samples/day). The amplitude spectrum tapers off from this point onwards.
+\end{flushleft}
+\end{par}
+
+
+\matlabheading{Step 5 - Variation In The Amplitude Spectra In 40 Year Spans}
+
+\begin{par}
+\begin{flushleft}
+We can use the \textit{Short-Time Fourier Transform }(STFT) to compute the amplitudes in contiguous partial blocks of the signal with overlap between these blocks. We can observe this variation per 40 year chunks. To first do this, we need the unique years in the dataset. We should also convert the current time vector to int16 values.
+\end{flushleft}
+\end{par}
+
+\begin{matlabcode}
+unique_years = int16(unique(years));
+t = int16(t);
+\end{matlabcode}
+
+\begin{par}
+\begin{flushleft}
+We now need to divide the unique\_years vector into 40 year chunks:
+\end{flushleft}
+\end{par}
+
+\begin{matlabcode}
+t_unique_chunk1 = unique_years(1:40);
+t_unique_chunk2 = unique_years(41:80);
+t_unique_chunk3 = unique_years(81:120);
+t_unique_chunk4 = unique_years(121:160);
+t_unique_chunk5 = unique_years(161:200);
+\end{matlabcode}
+
+\begin{par}
+\begin{flushleft}
+The last step is to pull the relevant indices based on each unique 40 year chunk from the $t$ vector and and interpolated $x$ vector, $F$. We do that in the following bit of code.
+\end{flushleft}
+\end{par}
+
+\begin{matlabcode}
+% Extract the first 40 year chunk from time-vector and the data vector.
+t_chunk1 = t(ismember(t, t_unique_chunk1, 'rows'));
+x_chunk1 = F(ismember(t, t_unique_chunk1, 'rows'));
+
+% Do the same for all chunks to be analysed.
+t_chunk2 = t(ismember(t, t_unique_chunk2, 'rows'));
+x_chunk2 = F(ismember(t, t_unique_chunk2, 'rows'));
+
+t_chunk3 = t(ismember(t, t_unique_chunk3, 'rows'));
+x_chunk3 = F(ismember(t, t_unique_chunk3, 'rows'));
+
+t_chunk4 = t(ismember(t, t_unique_chunk4, 'rows'));
+x_chunk4 = F(ismember(t, t_unique_chunk4, 'rows'));
+
+t_chunk5 = t(ismember(t, t_unique_chunk5, 'rows'));
+x_chunk5 = F(ismember(t, t_unique_chunk5, 'rows'));
+
+\end{matlabcode}
+
+\begin{par}
+\begin{flushleft}
+We can now perform the FFT for all $x\_{\mathrm{chunk}}_{i\;}$ for $i=1,2,3,4,5$. The resultant FFT's will be plotted one below the other as subplots in order to clearly see how any of the frequency modes change over these 40 year spans.
+\end{flushleft}
+\end{par}
+
+\begin{matlabcode}
+% FFT Block Size
+NFFT = 2048;
+
+% Compute the FFT for all chunks and take the magnitude.
+X1 = abs(fft(x_chunk1, NFFT));
+X2 = abs(fft(x_chunk2, NFFT));
+X3 = abs(fft(x_chunk3, NFFT));
+X4 = abs(fft(x_chunk4, NFFT));
+X5 = abs(fft(x_chunk5, NFFT));
+
+% We need to normalise the data in the event of extremely large spikes in
+% the resulting spectra:
+X1 = X1 / max(X1);
+X2 = X2 / max(X2);
+X3 = X3 / max(X3);
+X4 = X4 / max(X4);
+X5 = X5 / max(X5);
+
+% Take the only the positive half of the spectrum (one-sided). Take this
+% from index 1 to the last which is the index corresponding to HALF of the
+% FFT block size (i.e. index 512)
+X1 = X1(1:NFFT/2);
+X2 = X2(1:NFFT/2);
+X3 = X3(1:NFFT/2);
+X4 = X4(1:NFFT/2);
+X5 = X5(1:NFFT/2);
+
+% We can now plot each spectra as individual subplots on a single figure.
+% Prepare 5 subplots for each contiguous block of data:
+figure(5)
+subplot(5,1,1)
+plot(freq_Hz, X1)
+subplot(5,1,2)
+plot(freq_Hz, X2)
+subplot(5,1,3)
+plot(freq_Hz, X3)
+subplot(5,1,4)
+plot(freq_Hz, X4)
+subplot(5,1,5)
+plot(freq_Hz, X5)
+sgtitle("Spectral Changes To Sunspot Detection In 40 Year Intervals", 'fontweight', 'bold')
+xlabel("Frequency (Samples/Day)")
+\end{matlabcode}
+\begin{center}
+\includegraphics[width=\maxwidth{56.196688409433015em}]{figure_4.eps}
+\end{center}
+\begin{matlabcode}
+
+\end{matlabcode}
+
+
+\vspace{1em}
+
+\vspace{1em}
+\vspace{1em}
+
+\end{document}
